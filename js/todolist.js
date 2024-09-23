@@ -1,52 +1,87 @@
-const todoInput = document.getElementById("todo-input")
-const todoSubmit = document.getElementById("todo-submit")
+const todoForm = document.getElementById('todo-form')
+const todoInput = document.getElementById('todo-input')
 const todoList = document.getElementById("todo-list")
+    
+let todoData = loadData()
+updateTodoList()
 
-// To Do Submit Button
-todoSubmit.addEventListener("click", () => {
-    if (todoInput.value === ''){
-        alert('Please fill up the text field');
-    }
-    else{
-        // Elements
-        const li = document.createElement("li");
-        const p = document.createElement("p");
-        const i = document.createElement("i");
+todoForm.addEventListener('submit', function(e) {
+    e.preventDefault()
 
-        // Classes
-        i.classList.add('bi');
-        i.classList.add('bi-trash-fill');
-
-        // Values
-        p.innerHTML = todoInput.value;
-        
-        // Append
-        todoList.appendChild(li);
-        li.appendChild(p);
-        li.appendChild(i);
-    }
-
-    todoInput.value = '';
-    saveData();
+    addTodo()
 })
 
-// To Do Delete Button
-todoList.addEventListener("click", function(e) {
-    if (e.target.tagName === 'P') {
-        e.target.classList.toggle('checked');
-        saveData();
+function addTodo(){
+    const todoText = todoInput.value.trim()
+
+    if (todoText.length < 1){
+        alert('Please fill up the text field')
     }
-    else if (e.target.tagName === 'I') {
-        e.target.parentElement.remove();
-        saveData();
+    else {
+        const todoObject = {
+            text: todoText,
+            completed: false
+        }
+        todoData.push(todoObject)
+        updateTodoList()
+        saveData()
+        todoInput.value = ''
     }
-}, false)
+}
+
+function updateTodoList() {
+    todoList.innerHTML = '';
+    todoData.forEach((todo, todoIndex) => {
+        todoItem = createToDoItem(todo, todoIndex);
+        todoList.append(todoItem);
+    })
+}
+
+function createToDoItem(todo, todoIndex) {
+    const todoId = 'todo-' + todoIndex;
+    const li = document.createElement('li')
+    const todoText = todo.text;
+    li.className = 'todo-item';
+    li.innerHTML = `
+        <input type="checkbox" id="${todoId}">
+        <label class="todo-check" for="${todoId}">
+            <i class="bi bi-circle"></i>
+            <i class="bi bi-check-circle-fill"></i>
+        </label>
+        <label class="todo-text" for="${todoId}">
+            ${todoText}
+        </label>
+        <button class="todo-delete">
+            <i class="bi bi-trash-fill"></i>
+        </button>
+    `
+
+    const deleteButton = li.querySelector('.todo-delete')
+    deleteButton.addEventListener('click', () => {
+        deleteToDoItem(todoIndex)
+    })
+
+    const todoCheck = li.querySelector('input')
+    todoCheck.addEventListener('change', () => {
+        todoData[todoIndex].completed = todoCheck.checked;
+        saveData()
+    })
+    todoCheck.checked = todo.completed;
+    return li;
+}
+
+function deleteToDoItem(todoIndex){
+    todoData = todoData.filter((_, i) => i !== todoIndex)
+    saveData()
+    updateTodoList()
+}
 
 function saveData() {
-    localStorage.setItem('data', todoList.innerHTML);
+    const todoDataJson = JSON.stringify(todoData)
+    localStorage.setItem('todoData', todoDataJson)
 }
 
-function showData() {
-    todoList.innerHTML = localStorage.getItem('data');
+function loadData() {
+    const todoData = localStorage.getItem('todoData') || '[]'
+    return JSON.parse(todoData)
 }
-showData();
