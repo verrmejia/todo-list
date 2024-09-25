@@ -17,11 +17,9 @@
 .darkmode{
     --base-color: #3f3f3f;
     --base-variant: #1c1c1c;
+    
     --text-color: #F4F6F9;
     --text-secondary: #3f3f3f;
-
-    --primary-color: #1c1c1c;
-    --accent-color: #eab978;
 }
 /* Darkmode part end */
 /* Body part start */
@@ -98,36 +96,47 @@ section {
     margin-right: auto;
 }
 .todo-add{
-    background: var(--base-variant);
-    border-radius: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-bottom: 24px;
+    position: relative;
 }
 .todo-add input{
-    background: transparent;
+    background: var(--base-variant);
+    border-radius: 30px;
     color: var(--text-color);
     border: none;
-    padding: 20px;
-    flex: 1;
+    padding: 16px 95px 16px 20px;
     outline: none;
-    font-size: 16px;
+    font-size: inherit;
+    width: 100%;
+    
 }
 .todo-add button{
     border: none;
-    padding: 20px 30px;
     cursor: pointer;
     background: var(--primary-color);
     color: var(--accent-color);
     border-radius: 30px;
     font-weight: bolder;
     transition: 0.3s ease;
+    height: 80%;
+    padding: 0px 20px;
+
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 .todo-add button:hover{
-    transform: scale(1.1);
     background: var(--accent-color);
     color: var(--text-color);
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus{
+  -webkit-text-fill-color: var(--text-color);
+  -webkit-box-shadow: transparent;
+  transition: background-color 5000s ease-in-out 0s;
+  caret-color: var(--text-color);
 }
 
 .todo-container ul li{
